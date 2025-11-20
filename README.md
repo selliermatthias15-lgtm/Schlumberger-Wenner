@@ -1,4 +1,4 @@
-# :earth_americas: GDP dashboard template
+# :earth_americas: Schlumberger-Wenner
 
 A simple Streamlit app showing the the differences betwenn Schlumberger and Werner.
 
