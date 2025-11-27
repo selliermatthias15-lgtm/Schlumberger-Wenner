@@ -282,10 +282,10 @@ with col2:
          })
     st.dataframe(model_df, use_container_width=True)
     
-    model_df = pd.DataFrame({    
+    Data_meh = pd.DataFrame({    
         "Facteur K" : k_w,
          })
-    st.dataframe(model_df, use_container_width=True)
+    st.dataframe(Data_meh, use_container_width=True)
     
 
 # ==============================================================
