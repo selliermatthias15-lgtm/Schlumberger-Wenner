@@ -8,6 +8,7 @@ import numpy as np                    # numerical arrays & math (efficient vecto
 import pandas as pd                   # tabular data handling (for model table + CSV export)
 import matplotlib.pyplot as plt       # plotting library for charts and model visualization
 import streamlit as st                # Streamlit: web UI framework for Python (interactive apps)
+import math as math
 
 # --- SimPEG modules for DC resistivity ---
 from simpeg.electromagnetics.static import resistivity as dc  # SimPEG DC resistivity subpackage
@@ -127,6 +128,8 @@ for L, a_s in zip(AB2, MN2):
     src_s = dc.sources.Dipole([rx_s], A_s, B_s)
     src_list_s.append(src_s)
 
+
+
 survey_s = dc.Survey(src_list_s)
 
 # ---------------- Wenner survey ----------------
@@ -144,6 +147,8 @@ for L in AB2:
     rx_w = dc.receivers.Dipole(M_w, N_w, data_type="apparent_resistivity")
     src_w = dc.sources.Dipole([rx_w], A_w, B_w)
     src_list_w.append(src_w)
+
+    k_w = 2*math.pi*a_w
 
 survey_w = dc.Survey(src_list_w)
 
@@ -274,6 +279,7 @@ with col2:
         "Resistivity (Ω·m)": rho,
         "Thickness (m)": [*thicknesses, np.nan],
         "Note": [""] * (n_layers - 1) + ["Half-space"],
+        "Facteur K" : (k_w) + ["Meh"]
     })
     st.dataframe(model_df, use_container_width=True)
 
