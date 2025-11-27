@@ -285,9 +285,8 @@ with col2:
   Data_meh = pd.DataFrame({
     "Colonne 1": [k_w, k_w * 2],
     "Colonne 2": [AB2[0], AB2[-1]],
-    "Colonne 3": [rho_app_w[0], rho_app_w[-1]],
-})
-st.dataframe(Data_meh, use_container_width=True)
+        })
+    st.dataframe(Data_meh, use_container_width=True)
     
 
 # ==============================================================
