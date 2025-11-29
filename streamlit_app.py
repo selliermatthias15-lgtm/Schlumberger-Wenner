@@ -203,28 +203,28 @@ with col1:
     if ok:
         fig, ax = plt.subplots(figsize=(7, 5))
 
-        # Générer des couleurs pour chaque courbe selon le nombre de couches
+        # Couleurs vives pour chaque couche
         from matplotlib.cm import get_cmap
-        cmap_s = get_cmap('viridis', n_layers)  # Schlumberger
-        cmap_w = get_cmap('Reds', n_layers)   # Wenner
+        cmap_s = get_cmap('tab10')  # Schlumberger, couleurs vives
+        cmap_w = get_cmap('tab20')  # Wenner, encore plus contrastées
 
         # Découper AB2 en segments correspondant aux couches
         segments = np.array_split(np.arange(len(AB2)), n_layers)
 
-        # Tracer Schlumberger par segment avec couleurs propres
+        # Tracer Schlumberger par segment avec couleurs vives
         for i, idx in enumerate(segments):
             ax.loglog(
-                AB2[idx], rho_app_s[idx], 'x--',
-                color=cmap_s(i),
-                label=f'Schlumberger {i+1}' if i == 0 else None
+                AB2[idx], rho_app_s[idx], 'o-',
+                color=cmap_s(i % 10),  # tab10 a 10 couleurs max, on boucle si >10
+                label=f'Schlumberger C{i+1}' if i == 0 else None
             )
 
-        # Tracer Wenner par segment avec couleurs propres
+        # Tracer Wenner par segment avec couleurs vives
         for i, idx in enumerate(segments):
             ax.loglog(
                 AB2[idx], rho_app_w[idx], 's--',
-                color=cmap_w(i),
-                label=f'Wenner {i+1}' if i == 0 else None
+                color=cmap_w(i % 20),  # tab20 a 20 couleurs max
+                label=f'Wenner C{i+1}' if i == 0 else None
             )
 
         # Limites y autour des courbes
@@ -243,6 +243,7 @@ with col1:
 
         # Affichage dans Streamlit
         st.pyplot(fig, clear_figure=True)
+
 
 
 
