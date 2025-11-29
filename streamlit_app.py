@@ -126,6 +126,9 @@ for L, a_s in zip(AB2, MN2):
 
     #Facteur k
     k_s = math.pi*(AB2**2-a_s**2)/(a_s)
+    
+    # Calcul de la différence de potentiel pour chaque configuration
+    deltaV_s = rho_a_s * I / k_s
 
     
     rx_s = dc.receivers.Dipole(M_s, N_s, data_type="apparent_resistivity")
@@ -151,8 +154,12 @@ for L in AB2:
     rx_w = dc.receivers.Dipole(M_w, N_w, data_type="apparent_resistivity")
     src_w = dc.sources.Dipole([rx_w], A_w, B_w)
     src_list_w.append(src_w)
-
+    
+    # Calcul dy facteur k
     k_w = 2*math.pi*a_w
+   
+    # Calcul de deltaV_w
+    deltaV_w = rho_a_w * I / k_w
 
 survey_w = dc.Survey(src_list_w)
 
@@ -289,6 +296,7 @@ with col2:
     Data_meh = pd.DataFrame({
         "Array": ["Wenner", "Schlumberger"],
         "Facteur k": [k_w, k_s],
+        "Différence de potentiel" : [deltaV_w, deltaV_s],
         })
     st.dataframe(Data_meh, use_container_width=True)
     
