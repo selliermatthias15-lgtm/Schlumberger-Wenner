@@ -208,7 +208,7 @@ with col1:
         # Générer des couleurs dynamiques pour n_layers couches
         from matplotlib.cm import get_cmap
         cmap_s = get_cmap('plasma')   # Schlumberger
-        cmap_w = get_cmap('Greens')    # Wenner
+        cmap_w = get_cmap('viridis')    # Wenner
 
         # Découper AB2 en segments correspondant aux couches
         segments = np.array_split(np.arange(len(AB2)), n_layers)
