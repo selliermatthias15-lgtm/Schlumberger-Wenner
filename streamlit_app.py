@@ -203,50 +203,46 @@ with col1:
     if ok:
         fig, ax = plt.subplots(figsize=(7, 5))
 
-        # Two arrays on same AB/2 axis
-        ax.loglog(AB2, rho_app_s, "o-", label="Schlumberger ρₐ")
-        ax.loglog(AB2, rho_app_w, "s--", label="Wenner ρₐ")
+        # --- Graphe avec zones colorées pour chaque couche ---
 
-        # Y-limits to full decades around both curves
-        ymin = np.minimum(rho_app_s.min(), rho_app_w.min())
-        ymax = np.maximum(rho_app_s.max(), rho_app_w.max())
-        ymin = 10 ** np.floor(np.log10(ymin))
-        ymax = 10 ** np.ceil(np.log10(ymax))
-        ax.set_ylim(ymin, ymax)
+fig, ax = plt.subplots(figsize=(7, 5))
 
-        # Ticks only at decades
-        ax.yaxis.set_major_locator(LogLocator(base=10.0, subs=(1.0,)))
-        ax.yaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(2, 10) * 0.1))
-        ax.yaxis.set_major_formatter(LogFormatter(base=10.0, labelOnlyBase=True))
-        ax.yaxis.set_minor_formatter(NullFormatter())
+# Couleurs pour les couches (max 5 couches)
+couche_colors = ['#fefbd8', '#ffdfba', '#ffc8c8', '#b0e0e6', '#87cefa'][:n_layers]
 
-        ax.xaxis.set_major_locator(LogLocator(base=10.0, subs=(1.0,)))
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(2, 10) * 0.1))
-        ax.xaxis.set_major_formatter(LogFormatter(base=10.0, labelOnlyBase=True))
-        ax.xaxis.set_minor_formatter(NullFormatter())
+# Interfaces en profondeur (sommet de chaque couche)
+if len(thicknesses):
+    tops = np.r_[0.0, np.cumsum(thicknesses)]
+else:
+    tops = np.array([0.0])
 
-        ax.grid(True, which="both", ls=":", alpha=0.7)
+# Fond : remplir chaque couche avec sa couleur
+for i in range(n_layers):
+    if i < n_layers-1:
+        bottom = tops[i+1]
+    else:
+        bottom = tops[-1] + max(tops[-1]*0.3, 10.0)  # dernier half-space
+    ax.fill_between(AB2, tops[i], bottom, color=couche_colors[i], alpha=0.2)
 
-        ax.set_xlabel("AB/2 (m)")
-        ax.set_ylabel("Apparent resistivity (Ω·m)")
-        ax.set_title("Schlumberger vs Wenner — 1D VES (forward)")
-        ax.legend()
+# Tracer les courbes de résistivité apparente
+ax.loglog(AB2, rho_app_s, 'o-', label='Schlumberger ρₐ', color='blue')
+ax.loglog(AB2, rho_app_w, 's--', label='Wenner ρₐ', color='red')
 
-        st.pyplot(fig, clear_figure=True)
+# Limites y autour des courbes
+ymin = np.min([rho_app_s.min(), rho_app_w.min()])
+ymax = np.max([rho_app_s.max(), rho_app_w.max()])
+ax.set_ylim(ymin*0.8, ymax*1.2)
 
-        # Export both arrays in a single CSV
-        df_out = pd.DataFrame({
-            "AB/2 (m)": AB2,
-            "MN/2 Schlumberger (m)": MN2,
-            "ρa Schlumberger (Ω·m)": rho_app_s,
-            "ρa Wenner (Ω·m)": rho_app_w,
-        })
-        st.download_button(
-            "⬇️ Download synthetic data (CSV)",
-            data=df_out.to_csv(index=False).encode("utf-8"),
-            file_name="synthetic_VES_Schlumberger_Wenner.csv",
-            mime="text/csv",
-        )
+# Grille et labels
+ax.set_xlabel("AB/2 (m)")
+ax.set_ylabel("Apparent resistivity (Ω·m)")
+ax.set_title("1D VES — Schlumberger vs Wenner avec couches")
+ax.legend()
+ax.grid(True, which='both', ls=':', alpha=0.7)
+
+# Affichage dans Streamlit
+st.pyplot(fig, clear_figure=True)
+
 
 # --- RIGHT: Layered model visualization ---
 with col2:
@@ -295,7 +291,6 @@ with col2:
     Data_meh = pd.DataFrame({
         "Array": ["Wenner", "Schlumberger"],
         "Facteur k": [k_w, k_s],
-        "Différence de potentiel" : [deltaV_w, deltaV_s],
         })
     st.dataframe(Data_meh, use_container_width=True)
     
