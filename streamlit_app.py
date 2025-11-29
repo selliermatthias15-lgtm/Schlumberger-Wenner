@@ -128,7 +128,7 @@ for L, a_s in zip(AB2, MN2):
     k_s = math.pi*(AB2**2-a_s**2)/(a_s)
     
     # Calcul de la différence de potentiel pour chaque configuration
-    deltaV_s = rho_a_s * I / k_s
+    deltaV_s = rho * I / k_s
 
     
     rx_s = dc.receivers.Dipole(M_s, N_s, data_type="apparent_resistivity")
@@ -159,7 +159,7 @@ for L in AB2:
     k_w = 2*math.pi*a_w
    
     # Calcul de deltaV_w
-    deltaV_w = rho_a_w * I / k_w
+    deltaV_w = rho * I / k_w
 
 survey_w = dc.Survey(src_list_w)
 
