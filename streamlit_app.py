@@ -252,6 +252,7 @@ with col1:
 
 
 
+
 # --- RIGHT: Layered model visualization ---
 with col2:
     st.subheader("Layered model")
