@@ -203,38 +203,37 @@ with col1:
     if ok:
         # Créer figure
         fig, ax = plt.subplots(figsize=(7, 5))
-        ax.cla()  # Nettoyer la figure pour Streamlit
 
         # Générer des couleurs flashy cohérentes pour n_layers
-        import matplotlib.colors as mcolors
         from matplotlib.colors import hsv_to_rgb
 
         def flashy_colors(n):
             # n couleurs evenly spaced in HSV hue, saturation=0.9, value=0.9
             return [hsv_to_rgb((i/n, 0.9, 0.9)) for i in range(n)]
 
-        colors = flashy_colors(n_layers)
+        colors_s = flashy_colors(n_layers)  # Schlumberger
+        colors_w = flashy_colors(n_layers)  # Wenner (même nombre de couches)
 
         # Découper AB2 en segments correspondant aux couches
         segments = np.array_split(np.arange(len(AB2)), n_layers)
 
-        # Tracer Schlumberger par segment avec couleurs flashy
+        # Tracer Schlumberger par segment
         for i, idx in enumerate(segments):
             ax.loglog(
-                AB2[idx], rho_app_s[idx], 'o-', color=colors[i],
+                AB2[idx], rho_app_s[idx], 'o-', color=colors_s[i],
                 label=f'Schlumberger C{i+1}' if i == 0 else None
             )
 
-        # Tracer Wenner par segment avec mêmes couleurs mais style différent
+        # Tracer Wenner par segment
         for i, idx in enumerate(segments):
             ax.loglog(
-                AB2[idx], rho_app_w[idx], 's--', color=colors[i],
+                AB2[idx], rho_app_w[idx], 's--', color=colors_w[i],
                 label=f'Wenner C{i+1}' if i == 0 else None
             )
 
         # Limites y
-        ymin = np.minimum(rho_app_s.min(), rho_app_w.min())
-        ymax = np.maximum(rho_app_s.max(), rho_app_w.max())
+        ymin = min(rho_app_s.min(), rho_app_w.min())
+        ymax = max(rho_app_s.max(), rho_app_w.max())
         ymin = 10 ** np.floor(np.log10(ymin))
         ymax = 10 ** np.ceil(np.log10(ymax))
         ax.set_ylim(ymin, ymax)
@@ -248,6 +247,7 @@ with col1:
 
         # Affichage Streamlit
         st.pyplot(fig, clear_figure=True)
+
 
 
 
