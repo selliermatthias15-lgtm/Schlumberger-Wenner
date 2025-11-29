@@ -203,42 +203,39 @@ with col1:
     if ok:
         fig, ax = plt.subplots(figsize=(7, 5))
 
-        # --- Graphe avec zones colorées pour chaque couche ---
+        fig, ax = plt.subplots(figsize=(7, 5))
 
-fig, ax = plt.subplots(figsize=(7, 5))
-
-# Couleurs pour les couches (max 5 couches)
+# Couleurs pour chaque couche (max 5)
 couche_colors = ['#fefbd8', '#ffdfba', '#ffc8c8', '#b0e0e6', '#87cefa'][:n_layers]
 
-# Interfaces en profondeur (sommet de chaque couche)
-if len(thicknesses):
-    tops = np.r_[0.0, np.cumsum(thicknesses)]
-else:
-    tops = np.array([0.0])
+# Supposons que chaque point correspond à une couche (ou assignation simplifiée)
+# Ici on répartit uniformément AB2 en n_layers segments
+segments = np.array_split(np.arange(len(AB2)), n_layers)
 
-# Fond : remplir chaque couche avec sa couleur
-for i in range(n_layers):
-    if i < n_layers-1:
-        bottom = tops[i+1]
-    else:
-        bottom = tops[-1] + max(tops[-1]*0.3, 10.0)  # dernier half-space
-        ax.fill_between(AB2, tops[i], bottom, color=couche_colors[i], alpha=0.2)
+# Tracer Schlumberger par segment de couleur
+for i, idx in enumerate(segments):
+    ax.loglog(AB2[idx], rho_app_s[idx], 'o-', color=couche_colors[i], label=f'Schlumberger C{i+1}' if i==0 else None)
 
-        # Tracer les courbes de résistivité apparente
-        ax.loglog(AB2, rho_app_s, 'o-', label='Schlumberger ρₐ', color='blue')
-        ax.loglog(AB2, rho_app_w, 's--', label='Wenner ρₐ', color='red')
+# Tracer Wenner par segment de couleur
+for i, idx in enumerate(segments):
+    ax.loglog(AB2[idx], rho_app_w[idx], 's--', color=couche_colors[i], label=f'Wenner C{i+1}' if i==0 else None)
 
-        # Limites y autour des courbes
-        ymin = np.min([rho_app_s.min(), rho_app_w.min()])
-        ymax = np.max([rho_app_s.max(), rho_app_w.max()])
-        ax.set_ylim(ymin*0.8, ymax*1.2)
+# Limites y autour des courbes
+ymin = np.minimum(rho_app_s.min(), rho_app_w.min())
+ymax = np.maximum(rho_app_s.max(), rho_app_w.max())
+ymin = 10 ** np.floor(np.log10(ymin))
+ymax = 10 ** np.ceil(np.log10(ymax))
+ax.set_ylim(ymin, ymax)
 
-        # Grille et labels
-        ax.set_xlabel("AB/2 (m)")
-        ax.set_ylabel("Apparent resistivity (Ω·m)")
-        ax.set_title("1D VES — Schlumberger vs Wenner avec couches")
-        ax.legend()
-        ax.grid(True, which='both', ls=':', alpha=0.7)
+# Grille et labels
+ax.set_xlabel("AB/2 (m)")
+ax.set_ylabel("Apparent resistivity (Ω·m)")
+ax.set_title("Schlumberger vs Wenner — 1D VES (forward) par couche")
+ax.grid(True, which='both', ls=':', alpha=0.7)
+ax.legend()
+
+st.pyplot(fig, clear_figure=True)
+
 
         # Affichage dans Streamlit
         st.pyplot(fig, clear_figure=True)
