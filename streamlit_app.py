@@ -222,26 +222,26 @@ for i in range(n_layers):
         bottom = tops[i+1]
     else:
         bottom = tops[-1] + max(tops[-1]*0.3, 10.0)  # dernier half-space
-    ax.fill_between(AB2, tops[i], bottom, color=couche_colors[i], alpha=0.2)
+        ax.fill_between(AB2, tops[i], bottom, color=couche_colors[i], alpha=0.2)
 
-# Tracer les courbes de résistivité apparente
-ax.loglog(AB2, rho_app_s, 'o-', label='Schlumberger ρₐ', color='blue')
-ax.loglog(AB2, rho_app_w, 's--', label='Wenner ρₐ', color='red')
+        # Tracer les courbes de résistivité apparente
+        ax.loglog(AB2, rho_app_s, 'o-', label='Schlumberger ρₐ', color='blue')
+        ax.loglog(AB2, rho_app_w, 's--', label='Wenner ρₐ', color='red')
 
-# Limites y autour des courbes
-ymin = np.min([rho_app_s.min(), rho_app_w.min()])
-ymax = np.max([rho_app_s.max(), rho_app_w.max()])
-ax.set_ylim(ymin*0.8, ymax*1.2)
+        # Limites y autour des courbes
+        ymin = np.min([rho_app_s.min(), rho_app_w.min()])
+        ymax = np.max([rho_app_s.max(), rho_app_w.max()])
+        ax.set_ylim(ymin*0.8, ymax*1.2)
 
-# Grille et labels
-ax.set_xlabel("AB/2 (m)")
-ax.set_ylabel("Apparent resistivity (Ω·m)")
-ax.set_title("1D VES — Schlumberger vs Wenner avec couches")
-ax.legend()
-ax.grid(True, which='both', ls=':', alpha=0.7)
+        # Grille et labels
+        ax.set_xlabel("AB/2 (m)")
+        ax.set_ylabel("Apparent resistivity (Ω·m)")
+        ax.set_title("1D VES — Schlumberger vs Wenner avec couches")
+        ax.legend()
+        ax.grid(True, which='both', ls=':', alpha=0.7)
 
-# Affichage dans Streamlit
-st.pyplot(fig, clear_figure=True)
+        # Affichage dans Streamlit
+        st.pyplot(fig, clear_figure=True)
 
 
 # --- RIGHT: Layered model visualization ---
