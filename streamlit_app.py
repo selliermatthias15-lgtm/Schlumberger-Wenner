@@ -20,9 +20,9 @@ from matplotlib.ticker import LogLocator, LogFormatter, NullFormatter
 # 1) PAGE SETUP & HEADER
 # ---------------------------
 
-st.set_page_config(page_title="1D DC Forward (SimPEG)", page_icon="🪪", layout="wide")
+st.set_page_config(page_title="1D DC Forward Schlumberger + Wenner", page_icon="🪨", layout="wide")
 
-st.title("1D DC Resistivity — Forward Modelling (Schlumberger vs Wenner)")
+st.title("1D DC Resistivity — Forward Modelling (Schlumberger + Wenner)")
 st.markdown(
     "Configure a layered Earth and **AB/2** geometry, then compute the **apparent resistivity** curves "
     "for both **Schlumberger** and **Wenner** arrays. "
@@ -124,17 +124,12 @@ for L, a_s in zip(AB2, MN2):
     M_s = np.r_[-(a_s - eps), 0.0, 0.0]
     N_s = np.r_[+(a_s - eps), 0.0, 0.0]
 
-    #Facteur k
-    k_s = math.pi*(AB2**2-a_s**2)/(a_s)
-    
-
-
+    #Calcul du facteur géométrique Schlumberger k_s
+    k_s = (math.pi*AB2**2-a_s**2)/(a_s)
     
     rx_s = dc.receivers.Dipole(M_s, N_s, data_type="apparent_resistivity")
     src_s = dc.sources.Dipole([rx_s], A_s, B_s)
     src_list_s.append(src_s)
-
-
 
 survey_s = dc.Survey(src_list_s)
 
@@ -154,11 +149,9 @@ for L in AB2:
     src_w = dc.sources.Dipole([rx_w], A_w, B_w)
     src_list_w.append(src_w)
     
-    # Calcul dy facteur k
+    # Calcul du facteur géométrique Wenner k_w
     k_w = 2*math.pi*a_w
    
-    
-
 survey_w = dc.Survey(src_list_w)
 
 # ==============================================================
