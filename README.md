@@ -2,7 +2,7 @@
 
 A simple Streamlit app showing the the differences betwenn Schlumberger and Werner.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/)
+[![Open in Streamlit]([https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/](https://schlumberger-and-wenner.streamlit.app))
 
 ### How to run it on your own machine
 
